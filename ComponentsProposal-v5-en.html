@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="AIE3905 S02 and World Vision disaster intelligence project guide: World Model, Agent Harness, and Disaster Intelligence Benchmark">
+  <title>AIE3905 S02 · World Vision Project Components</title>
+  <style>
+    :root{
+      --ink:#142328;
+      --muted:#56666b;
+      --paper:#f3f5f4;
+      --surface:#ffffff;
+      --line:#d5dedc;
+      --deep:#102f34;
+      --deep-2:#17434a;
+      --teal:#087b7d;
+      --teal-soft:#e2f2f0;
+      --blue:#256b9c;
+      --blue-soft:#e7f0f7;
+      --orange:#ef5a29;
+      --orange-soft:#fff0e9;
+      --purple:#6652a5;
+      --purple-soft:#eeeafa;
+      --yellow:#f5c44b;
+      --shadow:0 12px 34px rgba(20,35,40,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--paper);
+      color:var(--ink);
+      font:16px/1.68 "PingFang SC","Noto Sans CJK SC","Microsoft YaHei",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    a{color:var(--teal);text-underline-offset:3px}
+    a:hover{color:var(--orange)}
+    h1,h2,h3,p{margin-top:0}
+    h1,h2{font-family:"Songti SC","Noto Serif CJK SC",STSong,Georgia,serif;letter-spacing:-.025em}
+    h1{margin-bottom:16px;font-size:clamp(2.35rem,5.2vw,4.6rem);line-height:1.08}
+    h2{margin-bottom:12px;font-size:clamp(1.75rem,3.3vw,2.55rem);line-height:1.2}
+    h3{margin-bottom:8px;font-size:1.08rem;line-height:1.4}
+    p{margin-bottom:12px}
+    ul,ol{margin:8px 0 0;padding-left:21px}
+    li{margin:7px 0}
+    code{font-family:"SFMono-Regular",Consolas,monospace;font-size:.88em}
+    main{width:min(1180px,calc(100% - 40px));margin:auto;padding:48px 0 80px}
+    .eyebrow{margin-bottom:10px;color:var(--teal);font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .lede{max-width:900px;color:var(--muted);font-size:1.15rem}
+    .hero{padding:28px 0 32px}
+    .hero-line{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:var(--muted);font-size:.9rem;font-weight:700}
+    .hero-line:before{content:"";width:46px;height:4px;background:var(--orange)}
+    .memory-line{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:28px}
+    .memory-item{padding:16px 18px;border-left:4px solid var(--teal);background:var(--surface);box-shadow:var(--shadow)}
+    .memory-item:nth-child(2){border-color:var(--blue)}
+    .memory-item:nth-child(3){border-color:var(--purple)}
+    .memory-item b{display:block;margin-bottom:3px;font-size:1.02rem}
+    .memory-item span{color:var(--muted);font-size:.9rem}
+    .nav{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 40px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .nav a{padding:7px 10px;color:var(--ink);font-size:.86rem;font-weight:750;text-decoration:none}
+    .nav a:hover,.nav a:focus{color:var(--teal);text-decoration:underline}
+    .section{margin-top:56px;scroll-margin-top:18px}
+    .section-copy{max-width:850px;color:var(--muted)}
+    .partner{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:28px;align-items:start;padding:30px;border-top:6px solid var(--orange);background:var(--surface);box-shadow:var(--shadow)}
+    .partner-name{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+    .partner-name h2{margin:0}
+    .partner-name a{font-weight:750}
+    .partner-facts{display:grid;gap:12px}
+    .fact{padding:13px 15px;background:var(--orange-soft)}
+    .fact b{display:block;margin-bottom:3px;color:#a83a17}
+    .fact span{color:#684839;font-size:.9rem}
+    .partner-note{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+    .selection-board{display:grid;grid-template-columns:minmax(260px,.72fr) 70px minmax(0,1.28fr);gap:18px;align-items:center;margin-top:24px;padding:26px;background:var(--surface);box-shadow:var(--shadow)}
+    .group-pool{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    .group-chip{display:grid;place-items:center;min-height:66px;border:1px solid var(--line);background:#f6f8f7;font-weight:850;text-align:center}
+    .group-chip small{display:block;color:var(--muted);font-size:.72rem;font-weight:650}
+    .choose-arrow{color:var(--orange);font-size:1.8rem;font-weight:900;text-align:center}
+    .lane-stack{display:grid;gap:9px}
+    .lane{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;align-items:center;padding:13px 15px;border-left:5px solid var(--teal);background:var(--teal-soft)}
+    .lane:nth-child(2){border-color:var(--blue);background:var(--blue-soft)}
+    .lane:nth-child(3){border-color:var(--purple);background:var(--purple-soft)}
+    .lane-index{font:1.4rem/1 Georgia,serif;font-weight:800}
+    .lane b{display:block}
+    .lane span{color:var(--muted);font-size:.82rem}
+    .lane em{padding:4px 8px;background:rgba(255,255,255,.72);color:var(--ink);font-size:.74rem;font-style:normal;font-weight:800;white-space:nowrap}
+    .selection-rules{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+    .selection-rule{padding:16px;background:var(--surface);border-top:4px solid var(--deep)}
+    .selection-rule b{display:block;margin-bottom:4px}
+    .selection-rule span{color:var(--muted);font-size:.86rem}
+    .competition-note{margin-top:14px;padding:17px 19px;border-left:5px solid var(--orange);background:var(--orange-soft);color:#684839}
+    .competition-note b{color:#a83a17}
+    .framework{padding:30px;background:var(--deep);color:#eff8f6;box-shadow:var(--shadow)}
+    .framework .eyebrow{color:#85d5cf}
+    .framework h2{color:#fff}
+    .framework-intro{max-width:850px;color:#c6ddda}
+    .input-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px}
+    .input-node{padding:14px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+    .input-node b{display:block;color:#fff;font-size:.92rem}
+    .input-node span{color:#bdd3d0;font-size:.8rem}
+    .down-arrow{text-align:center;color:var(--yellow);font-size:1.55rem;line-height:1.4}
+    .core-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .core-node{padding:20px;background:var(--surface);color:var(--ink)}
+    .core-node.c1{border-top:5px solid var(--teal)}
+    .core-node.c2{border-top:5px solid var(--blue)}
+    .core-node small{display:block;margin-bottom:4px;color:var(--muted);font-weight:750}
+    .core-node b{display:block;margin-bottom:7px;font-size:1.18rem}
+    .core-node p{margin:0;color:var(--muted);font-size:.9rem}
+    .merge{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin:12px 0;color:#a9c5c2;font-size:.84rem;text-align:center}
+    .merge span:nth-child(2){padding:13px 18px;background:#f5c44b;color:#33280b;font-weight:850;font-size:.96rem}
+    .benchmark-node{padding:20px;border:2px solid #aa99e8;background:#2a2550}
+    .benchmark-node small{display:block;color:#c9bef1;font-weight:750}
+    .benchmark-node b{display:block;margin:4px 0 6px;color:#fff;font-size:1.18rem}
+    .benchmark-node p{margin:0;color:#d9d1f3;font-size:.9rem}
+    .feedback{margin-top:10px;text-align:center;color:#c9bef1;font-size:.84rem}
+    .overview{width:100%;border-collapse:collapse;background:var(--surface);box-shadow:var(--shadow)}
+    .overview th,.overview td{padding:16px 18px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+    .overview thead th{border-top:0;background:#e8eeec;color:#365057;font-size:.78rem;letter-spacing:.06em}
+    .overview tbody th{width:25%;color:var(--ink)}
+    .overview td{color:var(--muted)}
+    .tag{display:inline-block;margin:3px 5px 3px 0;padding:3px 8px;background:#edf1f0;color:#42565b;font-size:.77rem;font-weight:700}
+    .component{padding-top:28px;border-top:2px solid var(--line)}
+    .component-head{display:grid;grid-template-columns:84px minmax(0,1fr);gap:20px;align-items:start;margin-bottom:24px}
+    .number{display:grid;place-items:center;width:72px;height:72px;color:#fff;font:2rem/1 Georgia,serif;background:var(--teal)}
+    .component.two .number{background:var(--blue)}
+    .component.three .number{background:var(--purple)}
+    .component-kicker{margin-bottom:5px;color:var(--teal);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .component.two .component-kicker{color:var(--blue)}
+    .component.three .component-kicker{color:var(--purple)}
+    .question{margin-bottom:0;color:var(--muted);font-size:1.08rem}
+    .component-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:24px;align-items:start}
+    .work-list{counter-reset:task;list-style:none;padding:0;margin:12px 0 0}
+    .work-list li{counter-increment:task;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;margin:13px 0;color:var(--muted)}
+    .work-list li:before{content:counter(task);display:grid;place-items:center;width:28px;height:28px;background:var(--teal-soft);color:var(--teal);font-weight:850}
+    .component.two .work-list li:before{background:var(--blue-soft);color:var(--blue)}
+    .component.three .work-list li:before{background:var(--purple-soft);color:var(--purple)}
+    .focus-box{padding:20px;background:var(--surface);box-shadow:var(--shadow)}
+    .focus-box h3{margin-bottom:10px}
+    .focus-box p,.focus-box li{color:var(--muted);font-size:.92rem}
+    .definition{margin-top:16px;padding:15px 17px;border-left:4px solid var(--teal);background:var(--teal-soft);color:#285659}
+    .component.two .definition{border-color:var(--blue);background:var(--blue-soft);color:#31566e}
+    .component.three .definition{border-color:var(--purple);background:var(--purple-soft);color:#514772}
+    .workflow{display:grid;grid-template-columns:repeat(9,auto);align-items:stretch;gap:7px;margin-top:24px}
+    .flow-step{min-width:0;padding:13px 11px;border-top:4px solid var(--teal);background:var(--surface);font-size:.88rem;font-weight:800;box-shadow:0 5px 15px rgba(20,35,40,.05)}
+    .component.two .flow-step{border-color:var(--blue)}
+    .component.three .flow-step{border-color:var(--purple)}
+    .flow-step small{display:block;margin-top:3px;color:var(--muted);font-size:.75rem;font-weight:500;line-height:1.45}
+    .flow-arrow{align-self:center;color:var(--orange);font-size:1.15rem;font-weight:800}
+    .deliverables{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .deliverable{padding:19px 20px;border-left:1px solid var(--line)}
+    .deliverable:first-child{border-left:0}
+    .deliverable b{display:block;margin-bottom:6px}
+    .deliverable p,.deliverable li{color:var(--muted);font-size:.88rem}
+    .deliverable ul{margin-top:4px}
+    .fit{margin-top:14px;color:var(--muted);font-size:.88rem}
+    .fit b{color:var(--ink)}
+    .metric-table-wrap{overflow-x:auto;margin-top:22px;background:var(--surface);box-shadow:var(--shadow)}
+    .metric-table{width:100%;min-width:850px;border-collapse:collapse}
+    .metric-table caption{padding:18px 18px 12px;text-align:left;font-family:"Songti SC","Noto Serif CJK SC",STSong,Georgia,serif;font-size:1.15rem;font-weight:800}
+    .metric-table th,.metric-table td{padding:13px 15px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+    .metric-table thead th{background:var(--purple-soft);color:#514772;font-size:.78rem}
+    .metric-table td{color:var(--muted);font-size:.88rem}
+    .metric-table td:first-child{color:var(--ink);font-weight:800}
+    .metric-table .metric-group th{padding:13px 15px;border-top:3px solid var(--teal);background:var(--teal-soft);color:#285f61;text-align:left}
+    .metric-table .metric-group span{font-size:1rem;font-weight:850;letter-spacing:.01em}
+    .metric-table .metric-group small{margin-left:10px;color:#4f7374;font-size:.78rem;font-weight:600}
+    .metric-table .group-llm th{border-color:var(--blue);background:var(--blue-soft);color:#315c75}
+    .metric-table .group-llm small{color:#557488}
+    .metric-table .group-harness th{border-color:var(--orange);background:var(--orange-soft);color:#9b411f}
+    .metric-table .group-harness small{color:#7b5b4e}
+    .benchmark-principles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:18px}
+    .principle{padding:16px;background:var(--purple-soft)}
+    .principle b{display:block;margin-bottom:4px;color:#514772}
+    .principle span{color:#665d7e;font-size:.84rem}
+    .research{margin-top:20px;padding:22px;border-left:5px solid var(--purple);background:var(--surface);box-shadow:var(--shadow)}
+    .research h3{color:var(--purple)}
+    .research-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .research p,.research li{color:var(--muted);font-size:.9rem}
+    .visual-examples{margin-top:28px;padding:26px;background:var(--deep);color:#eef8f6;box-shadow:var(--shadow)}
+    .visual-examples .eyebrow{color:#8bd8d2}
+    .visual-examples h3{margin-bottom:8px;color:#fff;font:1.6rem/1.3 "Songti SC","Noto Serif CJK SC",STSong,Georgia,serif}
+    .visual-examples>.intro{max-width:860px;color:#c8ddda}
+    .example-gallery{display:grid;grid-template-columns:1.08fr 1fr 1fr;gap:12px;margin-top:20px}
+    .example-figure{position:relative;min-height:360px;margin:0;overflow:hidden;background:#28484d}
+    .example-figure img{width:100%;height:100%;object-fit:cover;display:block}
+    .example-figure:after{content:"";position:absolute;inset:42% 0 0;background:linear-gradient(transparent,rgba(7,24,29,.96))}
+    .example-figure figcaption{position:absolute;left:16px;right:16px;bottom:15px;z-index:2}
+    .example-figure figcaption b{display:block;margin-bottom:5px;color:#fff;font-size:1.05rem}
+    .example-figure figcaption span{display:block;color:#d3e3e1;font-size:.84rem;line-height:1.45}
+    .example-note{margin:13px 0 0;color:#a9c7c3;font-size:.82rem}
+    .task-catalog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+    .task-catalog-item{padding:16px;background:var(--surface);border-top:4px solid var(--teal)}
+    .task-catalog-item b{display:block;margin-bottom:5px;color:var(--ink)}
+    .task-catalog-item span{color:var(--muted);font-size:.86rem}
+    .necessity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+    .necessity-item{padding:17px 18px;background:var(--surface);border-left:4px solid var(--purple)}
+    .necessity-item b{display:block;margin-bottom:5px;color:var(--purple)}
+    .necessity-item span{color:var(--muted);font-size:.88rem}
+    .benchmark-track-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+    .benchmark-track{display:flex;flex-direction:column;padding:20px;background:var(--surface);border-top:6px solid var(--purple);box-shadow:var(--shadow)}
+    .benchmark-track:nth-child(2){border-color:var(--blue)}
+    .benchmark-track:nth-child(3){border-color:var(--orange)}
+    .track-index{display:block;margin-bottom:9px;color:rgba(102,82,165,.38);font:1.85rem/1 Georgia,serif;font-weight:800}
+    .benchmark-track:nth-child(2) .track-index{color:rgba(37,107,156,.38)}
+    .benchmark-track:nth-child(3) .track-index{color:rgba(239,90,41,.38)}
+    .benchmark-track h3{margin-bottom:8px;font-size:1.08rem}
+    .benchmark-track>p{color:var(--muted);font-size:.9rem}
+    .benchmark-track ul{margin-top:auto;color:var(--muted);font-size:.84rem}
+    .track-question{margin-top:20px;padding:18px 20px;border-left:5px solid var(--purple);background:var(--purple-soft);color:#514772}
+    .fixed-harness-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:14px}
+    .fixed-harness-step{position:relative;padding:13px 11px;background:var(--blue-soft);color:#31566e;font-size:.82rem;font-weight:750;line-height:1.42}
+    .fixed-harness-step:after{content:"→";position:absolute;right:-8px;top:40%;z-index:2;color:var(--orange);font-weight:900}
+    .fixed-harness-step:last-child:after{display:none}
+    .integration-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+    .integration-item{padding:19px;background:var(--surface);box-shadow:var(--shadow)}
+    .integration-item:nth-child(1){border-top:5px solid var(--teal)}
+    .integration-item:nth-child(2){border-top:5px solid var(--blue)}
+    .integration-item:nth-child(3){border-top:5px solid var(--purple)}
+    .integration-item b{display:block;margin-bottom:7px}
+    .integration-item p{margin:0;color:var(--muted);font-size:.9rem}
+    .timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:24px;border-top:2px solid var(--deep)}
+    .phase{position:relative;padding:20px 18px 0}
+    .phase:before{content:"";position:absolute;top:-7px;left:18px;width:12px;height:12px;border-radius:50%;background:var(--orange)}
+    .phase small{display:block;color:var(--muted);font-weight:750}
+    .phase b{display:block;margin:5px 0}
+    .phase p{color:var(--muted);font-size:.86rem}
+    .boundary{margin-top:34px;padding:24px;background:var(--deep);color:#d5e7e4}
+    .boundary h3{color:#fff}
+    .boundary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .boundary ul{margin:0}
+    .boundary li{font-size:.9rem}
+    .sources{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:.84rem}
+    .sources b{color:var(--ink)}
+    footer{margin-top:28px;color:var(--muted);font-size:.82rem}
+    .language-toggle{
+      position:fixed;top:18px;right:20px;z-index:50;
+      display:inline-flex;align-items:center;gap:8px;
+      min-height:42px;padding:9px 14px;border:1px solid rgba(255,255,255,.38);
+      border-radius:999px;background:var(--deep);color:#fff;
+      box-shadow:0 8px 24px rgba(16,47,52,.22);
+      font:700 .88rem/1 "PingFang SC","Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;
+      cursor:pointer;
+    }
+    .language-toggle:hover{background:var(--teal)}
+    .language-toggle:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+    .language-toggle .lang-current{color:#fff}
+    .language-toggle .lang-switch{color:#b8d7d4}
+    @media(max-width:980px){
+      .memory-line,.input-row,.deliverables,.integration-grid,.benchmark-principles,.timeline,.selection-rules,.example-gallery,.task-catalog,.benchmark-track-grid{grid-template-columns:1fr 1fr}
+      .fixed-harness-flow{grid-template-columns:1fr}
+      .fixed-harness-step:after{display:none}
+      .component-grid,.partner{grid-template-columns:1fr}
+      .selection-board{grid-template-columns:1fr}
+      .choose-arrow{transform:rotate(90deg)}
+      .workflow{grid-template-columns:1fr}
+      .flow-arrow{text-align:center;transform:rotate(90deg)}
+    }
+    @media(max-width:700px){
+      main{width:min(100% - 26px,1180px);padding-top:74px}
+      .language-toggle{top:12px;right:13px}
+      .memory-line,.input-row,.core-row,.deliverables,.integration-grid,.benchmark-principles,.timeline,.research-grid,.boundary-grid,.selection-rules,.example-gallery,.task-catalog,.necessity-grid,.benchmark-track-grid{grid-template-columns:1fr}
+      .example-figure{min-height:300px}
+      .partner,.framework{padding:22px}
+      .selection-board{padding:20px}
+      .group-pool{grid-template-columns:repeat(5,minmax(52px,1fr));overflow-x:auto}
+      .lane{grid-template-columns:46px minmax(0,1fr)}
+      .lane em{grid-column:2;justify-self:start}
+      .component-head{grid-template-columns:58px 1fr;gap:14px}
+      .number{width:52px;height:52px;font-size:1.45rem}
+      .deliverable{border-left:0;border-top:1px solid var(--line)}
+      .deliverable:first-child{border-top:0}
+      .merge{grid-template-columns:1fr}
+      .merge span:first-child,.merge span:last-child{display:none}
+      .overview{display:block;overflow-x:auto}
+    }
+    @media print{
+      body{background:#fff}
+      main{width:auto;padding:20px}
+      .nav{display:none}
+      .partner,.framework,.focus-box,.overview,.metric-table-wrap,.research,.integration-item{box-shadow:none}
+      .section,.component,.framework,.research,.boundary{break-inside:avoid}
+      a{color:inherit}
+    }
+  </style>
+</head>
+<body>
+<button class="language-toggle" id="languageToggle" type="button" aria-label="Switch to Chinese">
+  <span class="lang-current">English</span><span aria-hidden="true">/</span><span class="lang-switch">中文</span>
+</button>
+<main>
+  <header class="hero">
+    <div class="hero-line">AIE3905 S02 · AI for Social Good</div>
+    <p class="eyebrow">World Vision 合作项目介绍</p>
+    <h1>五个小组，三个灾害智能组件</h1>
+    <p class="lede">五个小组将在同一学期并行推进三个组件。每组独立完成自己的项目、数据和证据；组间可以自愿协作，也可以让接口兼容，从而有机会组合成更完整的灾害决策支持工作流。</p>
+    <div class="memory-line" aria-label="三个组件的一句话说明">
+      <div class="memory-item"><b>01 World Model</b><span>回答：灾害可能怎样发展，会影响哪里？</span></div>
+      <div class="memory-item"><b>02 Agent Harness</b><span>回答：发生了什么变化，现在可以考虑做什么？</span></div>
+      <div class="memory-item"><b>03 Benchmark</b><span>回答：模型和系统到底做得多好，是否真正有用？</span></div>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="页面目录">
+    <a href="#partner">合作单位</a>
+    <a href="#selection">选题规则</a>
+    <a href="#system">系统总览</a>
+    <a href="#component1">01 World Model</a>
+    <a href="#component2">02 Harness</a>
+    <a href="#component3">03 Benchmark</a>
+    <a href="#integration">集成方式</a>
+  </nav>
+
+  <section class="section partner" id="partner">
+    <div>
+      <p class="eyebrow" style="color:var(--orange)">合作单位</p>
+      <div class="partner-name">
+        <h2>World Vision</h2>
+        <a href="https://www.worldvision.org/" target="_blank" rel="noopener">worldvision.org ↗</a>
+      </div>
+      <p class="section-copy">World Vision 是一个全球性的基督教人道主义组织，与儿童、家庭和社区合作，处理贫困与不公带来的长期问题，也参与灾害准备、紧急响应以及灾后恢复。其网络覆盖近 100 个国家，因此课程项目有机会接触真实的人道主义场景与一线需求。</p>
+      <p class="partner-note">本课程合作由 World Vision 相关亚太或东亚区域团队推动。正式演示和书面材料中使用的区域团队名称，应以合作方最终确认为准。</p>
+    </div>
+    <div class="partner-facts">
+      <div class="fact"><b>面向真实使用者</b><span>一线工作人员、社区负责人和人道主义决策人员，而不是抽象的“用户”。</span></div>
+      <div class="fact"><b>关注完整灾害周期</b><span>灾前准备、预先行动、紧急响应、恢复与长期社区韧性。</span></div>
+      <div class="fact"><b>我们的合作原则</b><span>帮助现有组织更有效地工作，保留社区参与和人工决定权。</span></div>
+    </div>
+  </section>
+
+  <section class="section" id="selection">
+    <p class="eyebrow">选题与分组</p>
+    <h2>三个项目同时进行，五个小组自由选择</h2>
+    <p class="section-copy">课程希望每个组件至少有一个小组负责，保证三条研究路线都能推进。剩余小组可以根据兴趣自由选择；多个小组选择同一个组件是允许的，五组全部选择同一组件也不会被禁止。</p>
+
+    <div class="selection-board" aria-label="五个小组选择三个并行项目的示意图">
+      <div class="group-pool">
+        <div class="group-chip">G1<small>小组 1</small></div>
+        <div class="group-chip">G2<small>小组 2</small></div>
+        <div class="group-chip">G3<small>小组 3</small></div>
+        <div class="group-chip">G4<small>小组 4</small></div>
+        <div class="group-chip">G5<small>小组 5</small></div>
+      </div>
+      <div class="choose-arrow" aria-hidden="true">→</div>
+      <div class="lane-stack">
+        <div class="lane"><div class="lane-index">01</div><div><b>World Model</b><span>数据、预测、空间模拟与可视化</span></div><em>期望 ≥ 1 组</em></div>
+        <div class="lane"><div class="lane-index">02</div><div><b>Agent Harness</b><span>监测、变化检测、RAG 与行动建议</span></div><em>期望 ≥ 1 组</em></div>
+        <div class="lane"><div class="lane-index">03</div><div><b>Benchmark</b><span>需求、案例、指标、基线与专家评估</span></div><em>期望 ≥ 1 组</em></div>
+      </div>
+    </div>
+
+    <div class="selection-rules">
+      <div class="selection-rule"><b>同时启动</b><span>三个项目不是前后依赖关系，从课程开始就并行推进。</span></div>
+      <div class="selection-rule"><b>独立负责</b><span>每个小组对自己的数据、代码、实验、演示和结论负责。</span></div>
+      <div class="selection-rule"><b>自愿协作</b><span>组间可以交换公开来源、格式、工具和经验，但不强制共享 Event Case。</span></div>
+      <div class="selection-rule"><b>成果可归因</b><span>合作时要清楚记录各组贡献，合作不等于合并成果或共同评分。</span></div>
+    </div>
+    <div class="competition-note"><b>关于同题竞争：</b>同一组件的小组越多，成果之间的直接横向比较就越强。评分会根据数据质量、技术深度、完成度、验证质量、实际价值和表达形成清楚区分，因此同题组一定会出现高低差异。</div>
+  </section>
+
+  <section class="section framework" id="system">
+    <p class="eyebrow">系统目标</p>
+    <h2>从现实数据到可验证的人道主义决策支持</h2>
+    <p class="framework-intro">下面展示的是三个组件可能形成的整体系统目标，不代表全班必须共享同一套数据。World Model 和 Harness 可产生预测、暴露分析与行动建议；Benchmark 可使用自己收集的历史案例、隐藏结果和行业专家标准进行独立评估，也可以在小组自愿合作时评估其他组件的输出。</p>
+
+    <div class="input-row" aria-label="系统输入">
+      <div class="input-node"><b>历史与空间数据</b><span>灾害、天气、地形、人口、建筑、设施、道路与灾后结果</span></div>
+      <div class="input-node"><b>实时权威信息</b><span>气象、水文、地震等主管机构的预警、通报与更新</span></div>
+      <div class="input-node"><b>知识与业务需求</b><span>SOP、技术手册、历史案例、社区约束与专家判断</span></div>
+    </div>
+    <div class="down-arrow" aria-hidden="true">↓</div>
+    <div class="core-row">
+      <div class="core-node c1"><small>COMPONENT 01</small><b>World Model</b><p>建立地区和灾害的数字表示，预测灾害走势、影响范围与潜在暴露。</p></div>
+      <div class="core-node c2"><small>COMPONENT 02</small><b>Agent Harness + RAG</b><p>持续监测权威来源，识别变化，检索受控知识并生成可审核建议。</p></div>
+    </div>
+    <div class="merge"><span>预测、风险图与暴露结果</span><span>兼容接口 · 可选协作</span><span>通报、证据与行动建议</span></div>
+    <div class="benchmark-node"><small>COMPONENT 03 · 独立并行开展</small><b>Disaster Intelligence Benchmark</b><p>用本组收集的隐藏案例与统一环境，分别评估多灾种预测模型、轻量 LLM Harness 和开放式 GIS 长程智能体，并分析它们对一线工作和社区决策的价值。</p></div>
+    <div class="feedback">独立完成 Benchmark；若小组自愿合作，评估结果与失败案例可反馈给 Component 01 和 02 ↑</div>
+  </section>
+
+  <section class="section" aria-labelledby="choose-heading">
+    <p class="eyebrow">如何选择</p>
+    <h2 id="choose-heading">三个组件的分工</h2>
+    <table class="overview">
+      <thead><tr><th>组件</th><th>核心问题</th><th>主要工作</th><th>适合的兴趣与能力</th></tr></thead>
+      <tbody>
+        <tr><th>01 · World Model</th><td>灾害会怎样发展，会影响哪里？</td><td>数据工程、灾害预测、空间分析、交互式可视化</td><td><span class="tag">World Model</span><span class="tag">机器学习</span><span class="tag">Simulation</span><span class="tag">可视化</span></td></tr>
+        <tr><th>02 · Agent Harness</th><td>信息发生了什么变化，可以考虑采取什么行动？</td><td>后台监测、变化检测、RAG、智能体编排、安全与审计</td><td><span class="tag">后端</span><span class="tag">LLM</span><span class="tag">RAG</span><span class="tag">Agent</span></td></tr>
+        <tr><th>03 · Benchmark</th><td>模型和系统性能如何，是否真正帮助了社区和一线人员？</td><td>多灾种 Event Case、轻量 LLM Harness、开放式 GIS 长程任务与统一评估</td><td><span class="tag">Benchmark</span><span class="tag">Tool Use</span><span class="tag">GIS</span><span class="tag">研究设计</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section component one" id="component1">
+    <div class="component-head">
+      <div class="number">01</div>
+      <div>
+        <p class="component-kicker">数据 · 预测 · 空间建模 · 可视化</p>
+        <h2>World Model：灾害预测与场景模拟</h2>
+        <p class="question">目标是建立一个可探索的数字世界，使研究者和实践人员可以输入条件，观察灾害可能的发展及其对特定地区的影响。</p>
+      </div>
+    </div>
+
+    <div class="component-grid">
+      <div>
+        <h3>学生需要完成的工作</h3>
+        <ol class="work-list">
+          <li>确定一个清晰的东南亚研究区域，并选择一组有联系的灾害与预测任务。可从台风轨迹和强度、强降雨与洪水危害开始，再按数据条件扩展地震或其他灾害。</li>
+          <li>收集多个历史事件及其连续时间快照，连接气象、水文或地质、地形、人口、道路、建筑、关键设施和灾后观测，并记录数据许可、来源、时间与版本。</li>
+          <li>完成清洗、质量检查和空间时间对齐，明确缺失值、覆盖不足与不确定性。</li>
+          <li>为每类预测任务建立可解释的规则或持续性基线，并比较传统统计/机器学习模型、开源深度模型和合适的 SOTA 开源模型；根据数据规模选择直接推理、微调或重新训练。</li>
+          <li>设计统一的输入输出接口，形成一系列相关预测：例如台风轨迹、登陆时间、强度和风圈，洪水水位、流量、危害指数、淹没范围与深度，以及人口和设施暴露。</li>
+          <li>制作交互式地图或时间轴，支持历史事件回放和假设情景模拟。</li>
+        </ol>
+      </div>
+      <aside class="focus-box">
+        <h3>这里的“World Model”是什么意思？</h3>
+        <p>它不是要求训练一个通用基础模型，而是建立一个数据驱动的地区与灾害数字表示。系统需要把环境状态、灾害演化和暴露对象连接起来，并允许用户改变输入后重新模拟结果。</p>
+        <div class="definition"><b>最低可用问题</b><br>给定某个时间、位置和环境状态，系统能否在多个历史事件上稳定预测接下来可能发生什么，展示哪些地方、人群和设施可能受到影响，并说明模型的不确定性？</div>
+      </aside>
+    </div>
+
+    <div class="visual-examples" aria-label="World Model 预测任务概念示例">
+      <p class="eyebrow">可视化目标示例</p>
+      <h3>同学们最终要让使用者“看见”预测任务和影响链</h3>
+      <p class="intro">下图不是指定的最终界面，也不是实时灾害预报，而是帮助大家理解可以被组合进 World Model 的预测输出：轨迹、不确定性、洪水危害、淹没范围和社区暴露。</p>
+      <div class="example-gallery">
+        <figure class="example-figure"><img src="WorldVision-Projects-Presentation-assets/world-model-typhoon-tracks-v2.png" alt="台风集合轨迹预测概念示意"><figcaption><b>台风轨迹与不确定性</b><span>比较多条可能路径、登陆点与时间、强度和影响范围，而不是只画一条确定路线。</span></figcaption></figure>
+        <figure class="example-figure"><img src="WorldVision-Projects-Presentation-assets/world-model-flood-hazard-v2.png" alt="洪水危害与淹没范围概念示意"><figcaption><b>洪水危害与淹没深度</b><span>从降雨和流域状态预测水位、流量、危害指数、淹没边界与不同时间步。</span></figcaption></figure>
+        <figure class="example-figure"><img src="WorldVision-Projects-Presentation-assets/world-model-multihazard-v2.png" alt="多灾种联动 World Model 概念示意"><figcaption><b>多灾种与社区影响链</b><span>把台风、降雨、河流洪水与人口、道路、建筑和关键设施暴露连接起来。</span></figcaption></figure>
+      </div>
+      <div class="task-catalog">
+        <div class="task-catalog-item"><b>台风预测任务</b><span>轨迹、强度、登陆时间、风圈范围、集合不确定性。</span></div>
+        <div class="task-catalog-item"><b>洪水预测任务</b><span>水位、流量、危害指数、淹没范围与深度、提前量。</span></div>
+        <div class="task-catalog-item"><b>影响预测任务</b><span>暴露人口、道路中断、设施风险、优先区域排序。</span></div>
+      </div>
+      <p class="example-note">三张图片由 OpenAI 图像生成工具创建，用于课程概念说明；不得当作真实或实时预报使用。</p>
+    </div>
+
+    <div class="workflow" aria-label="World Model 工作流程">
+      <div class="flow-step">定义任务组<small>地区、多事件与相关预测任务</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">构建数据<small>多源采集、对齐、版本与来源</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">比较模型<small>规则、传统模型、深度与 SOTA</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">预测影响<small>走势、范围、暴露与不确定性</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">场景模拟<small>地图、时间轴与条件修改</small></div>
+    </div>
+
+    <div class="deliverables">
+      <div class="deliverable"><b>最低交付</b><ul><li>多事件版本化数据集与 Data Card</li><li>至少 2–3 类相关预测任务</li><li>多类模型的统一比较流程</li></ul></div>
+      <div class="deliverable"><b>课堂演示</b><ul><li>多个历史事件回放</li><li>一次多因素 What-if 情景修改</li><li>交互式地图与不确定性说明</li></ul></div>
+      <div class="deliverable"><b>主要验收</b><ul><li>预测误差与空间重叠</li><li>暴露估计误差</li><li>模型可复现性与数据可追溯性</li></ul></div>
+    </div>
+    <p class="fit"><b>数据来源方向：</b>官方气象与水文机构、NOAA IBTrACS、GloFAS、Copernicus、WorldPop、OpenStreetMap、HDX、GDACS，以及经批准的社区数据。</p>
+  </section>
+
+  <section class="section component two" id="component2">
+    <div class="component-head">
+      <div class="number">02</div>
+      <div>
+        <p class="component-kicker">后台监测 · Agent · RAG · 人工审核</p>
+        <h2>台风 Agent Harness：从权威通报到行动建议</h2>
+        <p class="question">课程以台风作为主要案例：让系统全天候监测可信来源，识别有意义的变化，并把实时情景与经过治理的灾害知识连接起来。每个小组应围绕一个明确灾种完成端到端系统。</p>
+      </div>
+    </div>
+
+    <div class="component-grid">
+      <div>
+        <h3>学生需要完成的工作</h3>
+        <ol class="work-list">
+          <li>选择一个灾害主题和目标地区，并围绕它完成整个 Harness。推荐以台风为主案例；也可以改为洪水、地震或其他具有可靠权威信息源和 SOP 的灾害。</li>
+          <li>确定权威信息源和辅助信息源，开发定时抓取或 API 连接，并记录每次通报的时间、版本和原文。</li>
+          <li>把连续通报转换成结构化事件状态，识别路径、强度、范围、时间或预警级别的实质变化。</li>
+          <li>建立经过筛选和版本管理的 RAG 知识库，涵盖 SOP、响应标准、案例、风险手册和本地约束。</li>
+          <li>根据当前事件检索证据，生成分优先级的风险提示或行动建议，并附上引用、不确定性和缺失信息。</li>
+          <li>设置权限、人工确认、失败降级和审计日志。系统不能自行发布官方预警或执行高风险行动。</li>
+        </ol>
+      </div>
+      <aside class="focus-box">
+        <h3>Harness 不只是一个聊天机器人</h3>
+        <p>Harness 是智能体的运行和治理框架：它决定何时启动、调用哪些工具、保留什么状态、使用哪些知识，以及哪些输出必须由人审核。</p>
+        <div class="definition"><b>案例范围说明</b><br>每组不需要同时覆盖所有灾难。以台风、洪水或地震中的一种为主题，跑通“持续监测—变化检测—知识检索—建议—人工审核”的完整闭环即可。</div>
+      </aside>
+    </div>
+
+    <div class="workflow" aria-label="Agent Harness 工作流程">
+      <div class="flow-step">持续监测<small>API、网页、公告与异常检查</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">变化检测<small>提取字段并比较版本</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">更新事件<small>维护 Event Case 与当前状态</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">检索证据<small>SOP、标准、案例与约束</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">人工审核<small>建议、引用、风险与审计</small></div>
+    </div>
+
+    <div class="task-catalog" aria-label="Agent Harness 三个核心工程模块">
+      <div class="task-catalog-item" style="border-color:var(--blue)"><b>持续监控系统</b><span>设定抓取频率、来源优先级、故障重试与健康检查；保存每次通报的原文、时间戳、版本和解析结果。</span></div>
+      <div class="task-catalog-item" style="border-color:var(--blue)"><b>受治理的知识库</b><span>筛选 SOP、案例和手册，建立文档版本、适用国家/灾种、有效期、权限、分块与引用追踪。</span></div>
+      <div class="task-catalog-item" style="border-color:var(--blue)"><b>带证据的建议</b><span>将当前事件与知识证据组合，输出优先级、建议理由、不确定性、缺失信息和必须升级给人的事项。</span></div>
+    </div>
+
+    <div class="deliverables">
+      <div class="deliverable"><b>最低交付</b><ul><li>一至两个权威来源连接器与持续运行后台</li><li>结构化变化检测与事件状态</li><li>小而高质量、可版本追踪的 RAG 知识库</li></ul></div>
+      <div class="deliverable"><b>课堂演示</b><ul><li>一段历史通报序列回放</li><li>一次实质变化告警</li><li>带引用的建议与人工确认</li></ul></div>
+      <div class="deliverable"><b>主要验收</b><ul><li>变化检测准确率与延迟</li><li>检索覆盖与引用正确性</li><li>建议可执行性、安全性与可审计性</li></ul></div>
+    </div>
+    <p class="fit"><b>知识来源方向：</b>当地主管机构、JTWC、JMA、Sphere、CHS、IFRC 与政府指南、ReliefWeb、IFRC GO，以及合作方授权的本地 SOP。</p>
+  </section>
+
+  <section class="section component three" id="component3">
+    <div class="component-head">
+      <div class="number">03</div>
+      <div>
+        <p class="component-kicker">多灾种预测 · LLM Harness · GIS Agent · 学术产出</p>
+        <h2>Disaster Intelligence Benchmark：证明系统是否有效</h2>
+        <p class="question">这个组件从项目第一天就独立开展，包含三类互补测试：多灾种真实事件预测、轻量 LLM Harness 固定流程，以及面向 Codex、Claude Code 等系统的开放式 GIS 长程任务。</p>
+      </div>
+    </div>
+
+    <div class="component-grid">
+      <div>
+        <h3>学生需要完成的工作</h3>
+        <ol class="work-list">
+          <li>访谈 World Vision 或其他行业人员，明确三条评测赛道中的真实使用者、关键决策、可接受风险，以及哪些错误最严重。</li>
+          <li>建立符合 World Model 测试需要的多灾种真实事件集。至少覆盖若干台风、洪水、地震或其他事件，保存连续时间快照、预测输入、隐藏真值和空间影响结果。</li>
+          <li>提供一组基础预测组件或标准化预测输出，例如台风轨迹、洪水危害指数和暴露估算；同时准备少量清晰 SOP、案例材料、RAG 语料和可审计的 Web Search 接口。</li>
+          <li>构建轻量 Harness 环境，测试现有 LLM 能否按固定步骤读取通报、调用预测组件、搜索资料、检索 SOP、核对证据并生成结构化建议。</li>
+          <li>设计开放式 GIS 长程任务，让 Codex、Claude Code 等 Harness 系统自行规划、查找和核验资料、处理空间数据、运行分析并产出地图、数据和可复现报告。</li>
+          <li>为三条赛道分别设计指标、基线、隐藏测试、专家盲评和失败分析，防止答案泄漏，并说明结果如何反馈给 World Model 或 Harness。</li>
+        </ol>
+      </div>
+      <aside class="focus-box">
+        <h3>Benchmark 要同时测“模型”和“做事的系统”</h3>
+        <p>第一条赛道测预测模型；第二条赛道把 LLM 放进受控 Harness，测它能否正确调用工具和遵循 SOP；第三条赛道测长程智能体面对复杂、开放、需要 GIS 操作的真实任务时能否独立完成工作。</p>
+        <div class="definition"><b>核心问题</b><br>在隐藏结果和一致工具条件下，我们能否公平比较预测模型、单个 LLM 与完整 Harness，并指出它们在哪些灾种、步骤和任务复杂度上可靠或失败？</div>
+      </aside>
+    </div>
+
+    <div class="benchmark-track-grid" aria-label="Benchmark 三条评测赛道">
+      <article class="benchmark-track">
+        <span class="track-index">TRACK 01</span>
+        <h3>多灾种 World Model Benchmark</h3>
+        <p>用多个真实灾害事件检验预测与空间影响模型，支持跨事件、跨灾种和不同提前量的公平比较。</p>
+        <ul>
+          <li>台风：轨迹、强度、登陆时间、风圈</li>
+          <li>洪水：水位、流量、危害指数、淹没范围</li>
+          <li>地震或其他灾害：震度、影响范围、暴露</li>
+          <li>隐藏真值、时间外测试与不确定性校准</li>
+        </ul>
+      </article>
+      <article class="benchmark-track">
+        <span class="track-index">TRACK 02</span>
+        <h3>轻量 LLM Harness Benchmark</h3>
+        <p>向不同 LLM 提供相同的基础预测组件、简单 SOP、RAG 知识库和 Web Search，观察它们能否完成固定流程。</p>
+        <ul>
+          <li>工具选择、参数填写与步骤完成率</li>
+          <li>Web 资料核验、引用正确性与时效性</li>
+          <li>SOP 遵循、建议质量与安全升级</li>
+          <li>相同 Harness 下比较不同 LLM</li>
+        </ul>
+      </article>
+      <article class="benchmark-track">
+        <span class="track-index">TRACK 03</span>
+        <h3>开放式 GIS 长程任务</h3>
+        <p>给完整 Harness 一个复杂任务说明，让它自行拆解工作、查找资料、编写代码、运行 GIS 分析并交付可核验成果。</p>
+        <ul>
+          <li>面向 Codex、Claude Code 等智能体系统</li>
+          <li>多源数据搜索、下载、清洗与坐标对齐</li>
+          <li>空间分析、地图、表格和研究报告</li>
+          <li>过程日志、可复现性、恢复能力与人工介入</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="track-question">
+      <b>轻量 Harness 的固定步骤示例</b>
+      <div class="fixed-harness-flow" aria-label="轻量 LLM Harness 固定步骤">
+        <div class="fixed-harness-step">读取并结构化灾害通报</div>
+        <div class="fixed-harness-step">调用基础预测组件</div>
+        <div class="fixed-harness-step">Web Search 核验最新资料</div>
+        <div class="fixed-harness-step">检索 SOP 与历史案例</div>
+        <div class="fixed-harness-step">生成带引用建议并决定是否升级给人</div>
+      </div>
+    </div>
+
+    <div class="necessity-grid" aria-label="为什么灾害智能需要专门的 Benchmark">
+      <div class="necessity-item"><b>“预测更准”不代表来得及行动</b><span>需要同时测量提前量、概率校准、误报、漏报和不同地区或灾种上的稳定性。</span></div>
+      <div class="necessity-item"><b>“回答流畅”不代表证据可靠</b><span>需要单独检查检索覆盖、引用正确性、来源时效性、事实忠实度和冲突信息处理。</span></div>
+      <div class="necessity-item"><b>“建议合理”不代表符合工作流程</b><span>需要行业人员判断建议是否符合 SOP、是否完整可执行，以及何时必须拒答或升级给人。</span></div>
+      <div class="necessity-item"><b>“单项得分高”不代表社区受益</b><span>需要桌面演练和用户研究验证系统是否减少工作量、缩短决策时间并改善决策一致性。</span></div>
+    </div>
+
+    <div class="workflow" aria-label="Benchmark 构建流程">
+      <div class="flow-step">理解需求<small>用户、决策、风险与价值</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">定义任务<small>输入、输出、范围与失败</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">构建真值<small>事件案例、标注与隐藏结果</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">评估比较<small>指标、基线、盲测与专家评分</small></div><span class="flow-arrow">→</span>
+      <div class="flow-step">分析改进<small>失败模式、反馈与论文</small></div>
+    </div>
+
+    <div class="metric-table-wrap">
+      <table class="metric-table">
+        <caption>建议的六层评估框架：按评测对象分组</caption>
+        <thead><tr><th>评估层</th><th>要回答的问题</th><th>示例指标</th><th>真值或评审来源</th></tr></thead>
+        <tbody>
+          <tr class="metric-group group-world"><th colspan="4"><span>For World Model / Tools</span><small>评估灾害预测模型、暴露模型和提供给 LLM 调用的基础工具组件</small></th></tr>
+          <tr><td>灾害预测</td><td>路径、强度、时间与影响范围是否准确？概率是否可信？</td><td>位置或时间误差、MAE/RMSE、IoU、Brier/CRPS、提前量、漏报与误报</td><td>历史观测、最佳路径、卫星或官方灾情记录</td></tr>
+          <tr><td>暴露与影响</td><td>受影响人口、设施和资产估算是否正确？优先区域是否排对？</td><td>计数误差、空间重叠、排序相关、分群误差与不确定性覆盖</td><td>人口与设施数据、灾后范围、现场核验</td></tr>
+          <tr class="metric-group group-llm"><th colspan="4"><span>For LLMs</span><small>在统一的轻量 Harness、SOP、RAG、Web Search 和工具条件下比较不同大语言模型</small></th></tr>
+          <tr><td>通报与 RAG</td><td>系统是否识别了真正重要的变化，并找到正确、最新的证据？</td><td>字段提取和变化检测 Precision/Recall/F1、延迟、Recall@k、引用准确率、事实忠实度</td><td>人工标注通报差异、经批准的知识库与出处</td></tr>
+          <tr><td>行动建议</td><td>建议是否符合 SOP、完整、可执行并知道何时停止或求助？</td><td>专家量表、关键步骤覆盖、安全违规率、拒答或升级准确率、证据充分性</td><td>World Vision/行业专家、SOP、情景化评审</td></tr>
+          <tr class="metric-group group-harness"><th colspan="4"><span>For Harness</span><small>评估完整智能体系统的长程规划、工具编排、产物交付与实际工作价值</small></th></tr>
+          <tr><td>端到端价值</td><td>整套系统是否让一线人员更快、更清楚地作出高质量决定？</td><td>发现到告警时间、完成任务时间、工作量、决策一致性、信任与采用意愿</td><td>桌面演练、用户研究、访谈与结构化反馈</td></tr>
+          <tr><td>GIS 长程任务</td><td>Harness 能否自主规划并完成多步骤、多工具和多源数据的复杂空间任务？</td><td>任务完成率、空间结果正确性、数据与引用有效性、产物可运行性、复现率、人工介入次数、错误恢复率</td><td>隐藏任务规范、参考 GIS 流程、自动产物检查与专家复核</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="benchmark-principles">
+      <div class="principle"><b>隐藏结果</b><span>做决定前不能看到真实灾后结果，避免后见之明偏差。</span></div>
+      <div class="principle"><b>覆盖困难案例</b><span>包含误报、漏报、数据缺失、来源冲突、多语言和分布外事件。</span></div>
+      <div class="principle"><b>多层基线</b><span>比较规则与传统模型、开源预测模型、直接 LLM、固定轻量 Harness 和完整长程智能体。</span></div>
+      <div class="principle"><b>专家参与</b><span>行业人员共同定义高风险错误、权重和可接受阈值。</span></div>
+    </div>
+
+    <div class="deliverables">
+      <div class="deliverable"><b>最低交付</b><ul><li>三条赛道的 Benchmark Specification</li><li>多灾种 Event Case 与隐藏真值</li><li>轻量 Harness、GIS 长程任务和统一评估工具</li></ul></div>
+      <div class="deliverable"><b>课堂演示</b><ul><li>多模型预测的隐藏测试对比</li><li>不同 LLM 完成固定 Harness 步骤的对比</li><li>一个复杂 GIS 长程任务的完整回放</li></ul></div>
+      <div class="deliverable"><b>主要验收</b><ul><li>任务是否反映真实需求</li><li>指标是否可靠且可复现</li><li>是否能区分模型优劣并指导改进</li></ul></div>
+    </div>
+
+    <div class="research">
+      <div class="research-grid">
+        <div>
+          <h3>建议的第一学期 MVP</h3>
+          <ul>
+            <li>Track 01：从 20–30 个高质量多灾种 Event Case 起步，并保留多个时间快照和隐藏真值</li>
+            <li>Track 02：先提供 2–3 个基础预测组件、一个小型 SOP/RAG 语料库和 10–20 个固定流程任务</li>
+            <li>Track 03：设计 5–10 个需要多源数据与 GIS 操作的开放式长程任务，并定义可自动检查的交付物</li>
+            <li>三个 Track 分别设置开发集与隐藏测试集，再用统一报告呈现性能、成本、失败模式和人工介入</li>
+          </ul>
+        </div>
+        <div>
+          <h3>潜在研究与论文方向</h3>
+          <ul>
+            <li>灾害预测或暴露分析 Benchmark 数据集论文</li>
+            <li>RAG 是否提高灾害建议的事实性、可执行性和安全性</li>
+            <li>World Model 输出能否改善 Harness 的地点与人群优先级</li>
+            <li>不同 LLM 在相同轻量 Harness 下的工具使用、Web 核验和 SOP 遵循能力</li>
+            <li>Codex、Claude Code 等长程智能体完成复杂 GIS 任务的能力边界</li>
+            <li>自动指标与人道主义专家判断之间的一致性</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="fit"><b>项目特点：</b>这不是一个轻量的“跑分项目”。它同时需要多灾种 Event Case、基础预测组件、轻量 Harness 环境和开放式 GIS 长程任务，对案例设计、工具封装、标注质量、实验控制、自动评估和行业沟通都有较高要求。做好后既能独立形成有影响力的 Benchmark 论文，也能为前两个组件提供统一、外部且可复现的评价框架。</p>
+  </section>
+
+  <section class="section" id="integration">
+    <p class="eyebrow">共同工作方式</p>
+    <h2>独立收集，可选协作，接口尽量兼容</h2>
+    <p class="section-copy">五个小组默认独立收集数据和 Event Case，不要求建立全班共享数据集。小组之间可以并行开发，也可以自愿协作，交流公开数据来源、字段格式、标注说明、工具或模型输出；若希望做跨组件集成，再协商兼容接口和测试方式。</p>
+    <div class="integration-grid">
+      <div class="integration-item"><b>World Model 输出</b><p>灾害预测、风险或影响范围、暴露摘要、模型版本、不确定性与数据来源。</p></div>
+      <div class="integration-item"><b>Harness 输出</b><p>通报变化、事件状态、检索证据、行动建议、缺失信息、人工决定与运行日志。</p></div>
+      <div class="integration-item"><b>Benchmark 输出</b><p>多灾种测试案例与隐藏真值、基础预测工具、轻量 Harness、开放式 GIS 任务、指标、评分和失败分析。</p></div>
+    </div>
+
+    <div class="timeline" aria-label="建议项目节奏">
+      <div class="phase"><small>阶段 1</small><b>各组确定范围</b><p>每组选择灾害、地区、用户问题，并开始收集自己的案例与数据。</p></div>
+      <div class="phase"><small>阶段 2</small><b>建立最小闭环</b><p>各组定义自己的输入输出；有合作意向的小组再约定兼容字段。</p></div>
+      <div class="phase"><small>阶段 3</small><b>并行开发与验证</b><p>各组独立迭代；可自愿交换公开资源、模型输出或受控测试任务。</p></div>
+      <div class="phase"><small>阶段 4</small><b>独立演示，可选联动</b><p>每组展示自己的端到端成果；跨组件回放可作为扩展成果。</p></div>
+    </div>
+
+    <div class="boundary">
+      <h3>所有组件共同遵守的边界</h3>
+      <div class="boundary-grid">
+        <ul>
+          <li>只支持专业判断，不替代官方预警机构。</li>
+          <li>不自动下达疏散命令，不决定援助资格。</li>
+          <li>不自主分配资源或直接向社区发布高风险信息。</li>
+        </ul>
+        <ul>
+          <li>所有结果保留来源、版本、假设和不确定性。</li>
+          <li>涉及个人或社区数据时遵守隐私和访问权限。</li>
+          <li>关键输出必须可供人工确认、修改、拒绝和审计。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sources">
+    <b>公开参考：</b>
+    <a href="https://www.worldvision.org/about-us" target="_blank" rel="noopener">World Vision · About Us</a>；
+    <a href="https://www.worldvision.org/our-work/disaster-relief" target="_blank" rel="noopener">World Vision · Disaster Relief</a>。
+    项目内容同时参考课程的 World Vision/RELIF 资料、<code>ComponentsProposal-v2.html</code> 与 v4 文档。World Model 三张视觉由 OpenAI 图像生成工具创建，仅用于教学概念说明，不代表真实或实时预报。公开页面访问日期：2026-09-06。
+  </section>
+
+  <footer>AIE3905 S02 · 五个小组 · 三个并行项目 · 中文说明 v5 · 本页面用于课程项目介绍与选题讨论</footer>
+</main>
+<script type="application/json" id="translations">
+{
+  "World Vision 合作项目介绍": "World Vision Collaborative Project Overview",
+  "五个小组，三个灾害智能组件": "Five Groups, Three Disaster Intelligence Components",
+  "五个小组将在同一学期并行推进三个组件。每组独立完成自己的项目、数据和证据；组间可以自愿协作，也可以让接口兼容，从而有机会组合成更完整的灾害决策支持工作流。": "Five groups will develop three components in parallel during the semester. Each group is responsible for its own project, data, and evidence. Groups may collaborate voluntarily and adopt compatible interfaces, creating opportunities to form a more complete disaster decision-support workflow.",
+  "回答：灾害可能怎样发展，会影响哪里？": "Answers: How might a disaster develop, and where could it have an impact?",
+  "回答：发生了什么变化，现在可以考虑做什么？": "Answers: What has changed, and what actions could now be considered?",
+  "回答：模型和系统到底做得多好，是否真正有用？": "Answers: How well do the models and systems perform, and are they genuinely useful?",
+  "合作单位": "Partner",
+  "选题规则": "Project Selection",
+  "系统总览": "System Overview",
+  "集成方式": "Integration",
+  "World Vision 是一个全球性的基督教人道主义组织，与儿童、家庭和社区合作，处理贫困与不公带来的长期问题，也参与灾害准备、紧急响应以及灾后恢复。其网络覆盖近 100 个国家，因此课程项目有机会接触真实的人道主义场景与一线需求。": "World Vision is a global Christian humanitarian organisation that works with children, families, and communities to address the long-term effects of poverty and injustice. It also supports disaster preparedness, emergency response, and post-disaster recovery. With a presence in nearly 100 countries, World Vision gives these course projects an opportunity to engage with real humanitarian contexts and frontline needs.",
+  "本课程合作由 World Vision 相关亚太或东亚区域团队推动。正式演示和书面材料中使用的区域团队名称，应以合作方最终确认为准。": "This course collaboration is being supported by relevant World Vision teams in the Asia-Pacific or East Asia region. The regional team name used in formal presentations and written materials should follow World Vision’s final confirmation.",
+  "面向真实使用者": "Designed for Real Users",
+  "一线工作人员、社区负责人和人道主义决策人员，而不是抽象的“用户”。": "Frontline staff, community leaders, and humanitarian decision-makers—not an abstract idea of a user.",
+  "关注完整灾害周期": "Covering the Full Disaster Cycle",
+  "灾前准备、预先行动、紧急响应、恢复与长期社区韧性。": "Preparedness, anticipatory action, emergency response, recovery, and long-term community resilience.",
+  "我们的合作原则": "Our Collaboration Principle",
+  "帮助现有组织更有效地工作，保留社区参与和人工决定权。": "Help existing organisations work more effectively while preserving community participation and human decision-making.",
+  "选题与分组": "Project Selection and Grouping",
+  "三个项目同时进行，五个小组自由选择": "Three Parallel Projects, Five Groups",
+  "课程希望每个组件至少有一个小组负责，保证三条研究路线都能推进。剩余小组可以根据兴趣自由选择；多个小组选择同一个组件是允许的，五组全部选择同一组件也不会被禁止。": "The course aims to have at least one group responsible for each component so that all three research directions can move forward. The remaining groups may choose according to their interests. Multiple groups may select the same component, and even all five groups choosing one component is not prohibited.",
+  "小组 1": "Group 1",
+  "小组 2": "Group 2",
+  "小组 3": "Group 3",
+  "小组 4": "Group 4",
+  "小组 5": "Group 5",
+  "数据、预测、空间模拟与可视化": "Data, prediction, spatial simulation, and visualisation",
+  "期望 ≥ 1 组": "Target: at least 1 group",
+  "监测、变化检测、RAG 与行动建议": "Monitoring, change detection, RAG, and action recommendations",
+  "需求、案例、指标、基线与专家评估": "Needs, cases, metrics, baselines, and expert evaluation",
+  "同时启动": "Start in Parallel",
+  "三个项目不是前后依赖关系，从课程开始就并行推进。": "The projects are not sequential dependencies; all three begin and progress in parallel.",
+  "独立负责": "Independent Responsibility",
+  "每个小组对自己的数据、代码、实验、演示和结论负责。": "Each group is responsible for its own data, code, experiments, demonstration, and conclusions.",
+  "自愿协作": "Voluntary Collaboration",
+  "组间可以交换公开来源、格式、工具和经验，但不强制共享 Event Case。": "Groups may exchange public sources, formats, tools, and experience, but sharing Event Cases is not required.",
+  "成果可归因": "Traceable Contributions",
+  "合作时要清楚记录各组贡献，合作不等于合并成果或共同评分。": "When groups collaborate, each contribution must be clearly recorded. Collaboration does not mean merged deliverables or shared grades.",
+  "关于同题竞争：": "About Competition on the Same Topic:",
+  "同一组件的小组越多，成果之间的直接横向比较就越强。评分会根据数据质量、技术深度、完成度、验证质量、实际价值和表达形成清楚区分，因此同题组一定会出现高低差异。": "The more groups working on the same component, the stronger the direct comparison between their results. Grades will distinguish data quality, technical depth, completeness, validation quality, practical value, and communication, so groups working on the same topic should expect clear differences in performance.",
+  "系统目标": "System Goal",
+  "从现实数据到可验证的人道主义决策支持": "From Real-World Data to Verifiable Humanitarian Decision Support",
+  "下面展示的是三个组件可能形成的整体系统目标，不代表全班必须共享同一套数据。World Model 和 Harness 可产生预测、暴露分析与行动建议；Benchmark 可使用自己收集的历史案例、隐藏结果和行业专家标准进行独立评估，也可以在小组自愿合作时评估其他组件的输出。": "The diagram below shows the overall system that the three components could form. It does not mean that the whole class must share one dataset. The World Model and Harness can produce forecasts, exposure analyses, and action recommendations. The Benchmark can independently evaluate systems using its own historical cases, hidden outcomes, and expert criteria, or assess outputs from other components when groups choose to collaborate.",
+  "历史与空间数据": "Historical and Spatial Data",
+  "灾害、天气、地形、人口、建筑、设施、道路与灾后结果": "Disasters, weather, terrain, population, buildings, facilities, roads, and post-disaster outcomes",
+  "实时权威信息": "Real-Time Authoritative Information",
+  "气象、水文、地震等主管机构的预警、通报与更新": "Warnings, bulletins, and updates from meteorological, hydrological, and seismic authorities",
+  "知识与业务需求": "Knowledge and Operational Needs",
+  "SOP、技术手册、历史案例、社区约束与专家判断": "SOPs, technical manuals, historical cases, community constraints, and expert judgement",
+  "建立地区和灾害的数字表示，预测灾害走势、影响范围与潜在暴露。": "Build a digital representation of a region and its hazards to predict disaster development, affected areas, and potential exposure.",
+  "持续监测权威来源，识别变化，检索受控知识并生成可审核建议。": "Continuously monitor authoritative sources, identify changes, retrieve governed knowledge, and generate reviewable recommendations.",
+  "预测、风险图与暴露结果": "Forecasts, risk maps, and exposure results",
+  "兼容接口 · 可选协作": "Compatible Interfaces · Optional Collaboration",
+  "通报、证据与行动建议": "Bulletins, evidence, and action recommendations",
+  "COMPONENT 03 · 独立并行开展": "COMPONENT 03 · DEVELOPED INDEPENDENTLY AND IN PARALLEL",
+  "用本组收集的隐藏案例与统一环境，分别评估多灾种预测模型、轻量 LLM Harness 和开放式 GIS 长程智能体，并分析它们对一线工作和社区决策的价值。": "Use independently collected hidden cases and controlled environments to evaluate multi-hazard forecasting models, lightweight LLM harnesses, and open-ended long-horizon GIS agents, and analyse their value for frontline work and community decisions.",
+  "独立完成 Benchmark；若小组自愿合作，评估结果与失败案例可反馈给 Component 01 和 02 ↑": "Build the Benchmark independently; when groups collaborate voluntarily, evaluation results and failure cases can be fed back to Components 01 and 02 ↑",
+  "如何选择": "Choosing a Direction",
+  "三个组件的分工": "How the Three Components Differ",
+  "组件": "Component",
+  "核心问题": "Core Question",
+  "主要工作": "Main Work",
+  "适合的兴趣与能力": "Relevant Interests and Skills",
+  "灾害会怎样发展，会影响哪里？": "How will a disaster develop, and where will it have an impact?",
+  "数据工程、灾害预测、空间分析、交互式可视化": "Data engineering, disaster forecasting, spatial analysis, and interactive visualisation",
+  "机器学习": "Machine Learning",
+  "可视化": "Visualisation",
+  "信息发生了什么变化，可以考虑采取什么行动？": "What has changed, and what actions could be considered?",
+  "后台监测、变化检测、RAG、智能体编排、安全与审计": "Backend monitoring, change detection, RAG, agent orchestration, safety, and auditing",
+  "后端": "Backend",
+  "模型和系统性能如何，是否真正帮助了社区和一线人员？": "How well do the models and systems perform, and do they genuinely help communities and frontline staff?",
+  "多灾种 Event Case、轻量 LLM Harness、开放式 GIS 长程任务与统一评估": "Multi-hazard Event Cases, lightweight LLM harnesses, open-ended long-horizon GIS tasks, and unified evaluation",
+  "研究设计": "Research Design",
+  "数据 · 预测 · 空间建模 · 可视化": "DATA · FORECASTING · SPATIAL MODELLING · VISUALISATION",
+  "World Model：灾害预测与场景模拟": "World Model: Disaster Forecasting and Scenario Simulation",
+  "目标是建立一个可探索的数字世界，使研究者和实践人员可以输入条件，观察灾害可能的发展及其对特定地区的影响。": "The goal is to build an explorable digital world where researchers and practitioners can enter conditions and observe how a disaster may develop and affect a specific area.",
+  "学生需要完成的工作": "What Students Need to Build",
+  "确定一个清晰的东南亚研究区域，并选择一组有联系的灾害与预测任务。可从台风轨迹和强度、强降雨与洪水危害开始，再按数据条件扩展地震或其他灾害。": "Define a clear study area in Southeast Asia and select a connected set of hazards and forecasting tasks. You could begin with typhoon tracks and intensity, heavy rainfall, and flood hazards, then expand to earthquakes or other hazards where suitable data are available.",
+  "收集多个历史事件及其连续时间快照，连接气象、水文或地质、地形、人口、道路、建筑、关键设施和灾后观测，并记录数据许可、来源、时间与版本。": "Collect multiple historical events and consecutive time snapshots, linking meteorological, hydrological or geological data with terrain, population, roads, buildings, critical facilities, and post-disaster observations. Record licences, sources, timestamps, and versions.",
+  "完成清洗、质量检查和空间时间对齐，明确缺失值、覆盖不足与不确定性。": "Clean and quality-check the data, align it across space and time, and document missing values, gaps in coverage, and uncertainty.",
+  "为每类预测任务建立可解释的规则或持续性基线，并比较传统统计/机器学习模型、开源深度模型和合适的 SOTA 开源模型；根据数据规模选择直接推理、微调或重新训练。": "For each forecasting task, establish an interpretable rule-based or persistence baseline and compare it with traditional statistical or machine-learning models, open-source deep-learning models, and suitable state-of-the-art open models. Depending on the amount of data, use direct inference, fine-tuning, or retraining.",
+  "设计统一的输入输出接口，形成一系列相关预测：例如台风轨迹、登陆时间、强度和风圈，洪水水位、流量、危害指数、淹没范围与深度，以及人口和设施暴露。": "Design a consistent input-output interface for a series of related forecasts, such as typhoon tracks, landfall time, intensity and wind fields; flood levels, discharge, hazard indices, inundation extent and depth; and population or infrastructure exposure.",
+  "制作交互式地图或时间轴，支持历史事件回放和假设情景模拟。": "Build an interactive map or timeline that supports historical event replay and what-if scenario simulation.",
+  "这里的“World Model”是什么意思？": "What Do We Mean by a ‘World Model’?",
+  "它不是要求训练一个通用基础模型，而是建立一个数据驱动的地区与灾害数字表示。系统需要把环境状态、灾害演化和暴露对象连接起来，并允许用户改变输入后重新模拟结果。": "This does not require training a general-purpose foundation model. It means building a data-driven digital representation of a region and its hazards. The system should connect environmental conditions, disaster development, and exposed entities, then allow users to change inputs and run the simulation again.",
+  "最低可用问题": "Minimum Viable Question",
+  "给定某个时间、位置和环境状态，系统能否在多个历史事件上稳定预测接下来可能发生什么，展示哪些地方、人群和设施可能受到影响，并说明模型的不确定性？": "Given a time, location, and environmental state, can the system consistently predict what may happen next across multiple historical events, show which places, populations, and facilities may be affected, and communicate model uncertainty?",
+  "可视化目标示例": "VISUAL EXAMPLES",
+  "同学们最终要让使用者“看见”预测任务和影响链": "Help Users See the Forecasting Tasks and Impact Chain",
+  "下图不是指定的最终界面，也不是实时灾害预报，而是帮助大家理解可以被组合进 World Model 的预测输出：轨迹、不确定性、洪水危害、淹没范围和社区暴露。": "The examples below are neither prescribed final interfaces nor live disaster forecasts. They illustrate outputs that could be combined in a World Model: tracks, uncertainty, flood hazards, inundation extent, and community exposure.",
+  "台风轨迹与不确定性": "Typhoon Tracks and Uncertainty",
+  "比较多条可能路径、登陆点与时间、强度和影响范围，而不是只画一条确定路线。": "Compare multiple possible tracks, landfall locations and times, intensity, and affected areas rather than showing one deterministic path.",
+  "洪水危害与淹没深度": "Flood Hazard and Inundation Depth",
+  "从降雨和流域状态预测水位、流量、危害指数、淹没边界与不同时间步。": "Use rainfall and catchment conditions to forecast water levels, discharge, hazard indices, inundation boundaries, and changes over time.",
+  "多灾种与社区影响链": "Multi-Hazard and Community Impact Chain",
+  "把台风、降雨、河流洪水与人口、道路、建筑和关键设施暴露连接起来。": "Connect typhoons, rainfall, and river flooding with exposure of populations, roads, buildings, and critical facilities.",
+  "台风预测任务": "Typhoon Forecasting Tasks",
+  "轨迹、强度、登陆时间、风圈范围、集合不确定性。": "Track, intensity, landfall time, wind-field extent, and ensemble uncertainty.",
+  "洪水预测任务": "Flood Forecasting Tasks",
+  "水位、流量、危害指数、淹没范围与深度、提前量。": "Water level, discharge, hazard index, inundation extent and depth, and lead time.",
+  "影响预测任务": "Impact Forecasting Tasks",
+  "暴露人口、道路中断、设施风险、优先区域排序。": "Exposed population, road disruption, facility risk, and priority-area ranking.",
+  "三张图片由 OpenAI 图像生成工具创建，用于课程概念说明；不得当作真实或实时预报使用。": "The three images were created with OpenAI image generation for course illustration only. They must not be treated as real or live forecasts.",
+  "定义任务组": "Define Task Set",
+  "地区、多事件与相关预测任务": "Region, multiple events, and related forecasting tasks",
+  "构建数据": "Build the Data",
+  "多源采集、对齐、版本与来源": "Multi-source collection, alignment, versions, and provenance",
+  "比较模型": "Compare Models",
+  "规则、传统模型、深度与 SOTA": "Rules, traditional models, deep learning, and SOTA",
+  "预测影响": "Forecast Impacts",
+  "走势、范围、暴露与不确定性": "Development, extent, exposure, and uncertainty",
+  "场景模拟": "Scenario Simulation",
+  "地图、时间轴与条件修改": "Maps, timelines, and modified conditions",
+  "最低交付": "Minimum Deliverables",
+  "多事件版本化数据集与 Data Card": "Versioned multi-event dataset and Data Card",
+  "至少 2–3 类相关预测任务": "At least 2–3 related forecasting tasks",
+  "多类模型的统一比较流程": "A unified comparison pipeline for multiple model families",
+  "课堂演示": "Class Demonstration",
+  "多个历史事件回放": "Replay of multiple historical events",
+  "一次多因素 What-if 情景修改": "One multi-factor what-if scenario",
+  "交互式地图与不确定性说明": "Interactive map and uncertainty explanation",
+  "主要验收": "Primary Evaluation",
+  "预测误差与空间重叠": "Forecast error and spatial overlap",
+  "暴露估计误差": "Exposure-estimation error",
+  "模型可复现性与数据可追溯性": "Model reproducibility and data traceability",
+  "数据来源方向：": "Potential Data Sources:",
+  "官方气象与水文机构、NOAA IBTrACS、GloFAS、Copernicus、WorldPop、OpenStreetMap、HDX、GDACS，以及经批准的社区数据。": "Official meteorological and hydrological agencies, NOAA IBTrACS, GloFAS, Copernicus, WorldPop, OpenStreetMap, HDX, GDACS, and approved community data.",
+  "后台监测 · Agent · RAG · 人工审核": "BACKEND MONITORING · AGENT · RAG · HUMAN REVIEW",
+  "台风 Agent Harness：从权威通报到行动建议": "Typhoon Agent Harness: From Authoritative Bulletins to Action Recommendations",
+  "课程以台风作为主要案例：让系统全天候监测可信来源，识别有意义的变化，并把实时情景与经过治理的灾害知识连接起来。每个小组应围绕一个明确灾种完成端到端系统。": "The course uses typhoons as the primary example: the system continuously monitors trusted sources, identifies meaningful changes, and connects the current situation with governed disaster knowledge. Each group should build an end-to-end system around one clearly defined hazard.",
+  "选择一个灾害主题和目标地区，并围绕它完成整个 Harness。推荐以台风为主案例；也可以改为洪水、地震或其他具有可靠权威信息源和 SOP 的灾害。": "Choose one hazard theme and target region, then build the complete Harness around it. Typhoons are recommended as the main example, but groups may instead select floods, earthquakes, or another hazard with reliable authoritative sources and SOPs.",
+  "确定权威信息源和辅助信息源，开发定时抓取或 API 连接，并记录每次通报的时间、版本和原文。": "Identify authoritative and supplementary information sources, develop scheduled scraping or API connections, and record the time, version, and original text of every bulletin.",
+  "把连续通报转换成结构化事件状态，识别路径、强度、范围、时间或预警级别的实质变化。": "Convert consecutive bulletins into a structured event state and identify material changes in track, intensity, extent, timing, or alert level.",
+  "建立经过筛选和版本管理的 RAG 知识库，涵盖 SOP、响应标准、案例、风险手册和本地约束。": "Build a curated and version-controlled RAG knowledge base covering SOPs, response standards, cases, risk manuals, and local constraints.",
+  "根据当前事件检索证据，生成分优先级的风险提示或行动建议，并附上引用、不确定性和缺失信息。": "Retrieve evidence for the current event and generate prioritised risk alerts or action recommendations with citations, uncertainty, and missing information.",
+  "设置权限、人工确认、失败降级和审计日志。系统不能自行发布官方预警或执行高风险行动。": "Implement permissions, human confirmation, failure fallback, and audit logs. The system must not independently issue official warnings or execute high-risk actions.",
+  "Harness 不只是一个聊天机器人": "A Harness Is More Than a Chatbot",
+  "Harness 是智能体的运行和治理框架：它决定何时启动、调用哪些工具、保留什么状态、使用哪些知识，以及哪些输出必须由人审核。": "A Harness is the operating and governance framework for an agent. It determines when to run, which tools to call, what state to retain, which knowledge to use, and which outputs require human review.",
+  "案例范围说明": "Case Scope",
+  "每组不需要同时覆盖所有灾难。以台风、洪水或地震中的一种为主题，跑通“持续监测—变化检测—知识检索—建议—人工审核”的完整闭环即可。": "A group does not need to cover every hazard. Choose one—such as a typhoon, flood, or earthquake—and complete the full loop of continuous monitoring, change detection, knowledge retrieval, recommendations, and human review.",
+  "持续监测": "Continuous Monitoring",
+  "API、网页、公告与异常检查": "APIs, web pages, bulletins, and anomaly checks",
+  "变化检测": "Change Detection",
+  "提取字段并比较版本": "Extract fields and compare versions",
+  "更新事件": "Update Event State",
+  "维护 Event Case 与当前状态": "Maintain the Event Case and current state",
+  "检索证据": "Retrieve Evidence",
+  "SOP、标准、案例与约束": "SOPs, standards, cases, and constraints",
+  "人工审核": "Human Review",
+  "建议、引用、风险与审计": "Recommendations, citations, risk, and auditing",
+  "持续监控系统": "Continuous Monitoring System",
+  "设定抓取频率、来源优先级、故障重试与健康检查；保存每次通报的原文、时间戳、版本和解析结果。": "Set collection frequency, source priority, retry behaviour, and health checks. Store the original text, timestamp, version, and parsed result for every bulletin.",
+  "受治理的知识库": "Governed Knowledge Base",
+  "筛选 SOP、案例和手册，建立文档版本、适用国家/灾种、有效期、权限、分块与引用追踪。": "Curate SOPs, cases, and manuals while recording document versions, applicable countries and hazards, validity periods, permissions, chunks, and citation provenance.",
+  "带证据的建议": "Evidence-Grounded Recommendations",
+  "将当前事件与知识证据组合，输出优先级、建议理由、不确定性、缺失信息和必须升级给人的事项。": "Combine the current event with relevant evidence to produce priorities, rationale, uncertainty, missing information, and items that must be escalated to a human.",
+  "一至两个权威来源连接器与持续运行后台": "One or two authoritative-source connectors and a continuously running backend",
+  "结构化变化检测与事件状态": "Structured change detection and event state",
+  "小而高质量、可版本追踪的 RAG 知识库": "A small, high-quality, version-traceable RAG knowledge base",
+  "一段历史通报序列回放": "Replay of a historical bulletin sequence",
+  "一次实质变化告警": "One material-change alert",
+  "带引用的建议与人工确认": "Cited recommendations with human confirmation",
+  "变化检测准确率与延迟": "Change-detection accuracy and latency",
+  "检索覆盖与引用正确性": "Retrieval coverage and citation correctness",
+  "建议可执行性、安全性与可审计性": "Recommendation actionability, safety, and auditability",
+  "知识来源方向：": "Potential Knowledge Sources:",
+  "当地主管机构、JTWC、JMA、Sphere、CHS、IFRC 与政府指南、ReliefWeb、IFRC GO，以及合作方授权的本地 SOP。": "Local authorities, JTWC, JMA, Sphere, CHS, IFRC and government guidance, ReliefWeb, IFRC GO, and partner-authorised local SOPs.",
+  "多灾种预测 · LLM Harness · GIS Agent · 学术产出": "MULTI-HAZARD FORECASTING · LLM HARNESS · GIS AGENT · RESEARCH OUTPUT",
+  "Disaster Intelligence Benchmark：证明系统是否有效": "Disaster Intelligence Benchmark: Demonstrating Whether the System Works",
+  "这个组件从项目第一天就独立开展，包含三类互补测试：多灾种真实事件预测、轻量 LLM Harness 固定流程，以及面向 Codex、Claude Code 等系统的开放式 GIS 长程任务。": "This component runs independently from the first day of the project. It contains three complementary forms of evaluation: real-event multi-hazard forecasting, fixed workflows in a lightweight LLM harness, and open-ended long-horizon GIS tasks for systems such as Codex and Claude Code.",
+  "访谈 World Vision 或其他行业人员，明确三条评测赛道中的真实使用者、关键决策、可接受风险，以及哪些错误最严重。": "Interview World Vision or other practitioners to identify real users, critical decisions, acceptable risk, and the most serious errors for each of the three evaluation tracks.",
+  "建立符合 World Model 测试需要的多灾种真实事件集。至少覆盖若干台风、洪水、地震或其他事件，保存连续时间快照、预测输入、隐藏真值和空间影响结果。": "Build a multi-hazard real-event set suitable for World Model evaluation. Include several typhoons, floods, earthquakes, or other events, with consecutive time snapshots, forecasting inputs, hidden ground truth, and spatial impact outcomes.",
+  "提供一组基础预测组件或标准化预测输出，例如台风轨迹、洪水危害指数和暴露估算；同时准备少量清晰 SOP、案例材料、RAG 语料和可审计的 Web Search 接口。": "Provide basic forecasting components or standardised outputs, such as typhoon tracks, flood hazard indices, and exposure estimates. Also prepare a concise set of SOPs, case materials, RAG content, and an auditable web-search interface.",
+  "构建轻量 Harness 环境，测试现有 LLM 能否按固定步骤读取通报、调用预测组件、搜索资料、检索 SOP、核对证据并生成结构化建议。": "Build a lightweight Harness environment to test whether current LLMs can follow fixed steps: read bulletins, call forecasting components, search for information, retrieve SOPs, verify evidence, and generate structured recommendations.",
+  "设计开放式 GIS 长程任务，让 Codex、Claude Code 等 Harness 系统自行规划、查找和核验资料、处理空间数据、运行分析并产出地图、数据和可复现报告。": "Design open-ended, long-horizon GIS tasks in which Harness systems such as Codex and Claude Code must plan independently, find and verify information, process spatial data, run analyses, and produce maps, datasets, and reproducible reports.",
+  "为三条赛道分别设计指标、基线、隐藏测试、专家盲评和失败分析，防止答案泄漏，并说明结果如何反馈给 World Model 或 Harness。": "For each track, design metrics, baselines, hidden tests, blinded expert review, and failure analysis. Prevent answer leakage and explain how results can inform improvements to the World Model or Harness.",
+  "Benchmark 要同时测“模型”和“做事的系统”": "The Benchmark Must Evaluate Both Models and Systems That Perform Work",
+  "第一条赛道测预测模型；第二条赛道把 LLM 放进受控 Harness，测它能否正确调用工具和遵循 SOP；第三条赛道测长程智能体面对复杂、开放、需要 GIS 操作的真实任务时能否独立完成工作。": "Track 1 evaluates forecasting models. Track 2 places an LLM in a controlled Harness to assess whether it can call tools correctly and follow SOPs. Track 3 evaluates whether a long-horizon agent can independently complete complex, open-ended, GIS-intensive real-world tasks.",
+  "核心问题": "Core Question",
+  "在隐藏结果和一致工具条件下，我们能否公平比较预测模型、单个 LLM 与完整 Harness，并指出它们在哪些灾种、步骤和任务复杂度上可靠或失败？": "Under hidden outcomes and consistent tool conditions, can we fairly compare forecasting models, individual LLMs, and complete Harnesses—and identify the hazards, workflow steps, and task complexities where they succeed or fail?",
+  "多灾种 World Model Benchmark": "Multi-Hazard World Model Benchmark",
+  "用多个真实灾害事件检验预测与空间影响模型，支持跨事件、跨灾种和不同提前量的公平比较。": "Evaluate forecasting and spatial-impact models using multiple real disaster events, enabling fair comparisons across events, hazards, and forecast lead times.",
+  "台风：轨迹、强度、登陆时间、风圈": "Typhoons: track, intensity, landfall time, and wind field",
+  "洪水：水位、流量、危害指数、淹没范围": "Floods: water level, discharge, hazard index, and inundation extent",
+  "地震或其他灾害：震度、影响范围、暴露": "Earthquakes or other hazards: intensity, affected area, and exposure",
+  "隐藏真值、时间外测试与不确定性校准": "Hidden ground truth, out-of-time testing, and uncertainty calibration",
+  "轻量 LLM Harness Benchmark": "Lightweight LLM Harness Benchmark",
+  "向不同 LLM 提供相同的基础预测组件、简单 SOP、RAG 知识库和 Web Search，观察它们能否完成固定流程。": "Give different LLMs the same basic forecasting components, simple SOPs, RAG knowledge base, and web search, then test whether they can complete a fixed workflow.",
+  "工具选择、参数填写与步骤完成率": "Tool selection, parameter entry, and step-completion rate",
+  "Web 资料核验、引用正确性与时效性": "Web verification, citation correctness, and timeliness",
+  "SOP 遵循、建议质量与安全升级": "SOP compliance, recommendation quality, and safe escalation",
+  "相同 Harness 下比较不同 LLM": "Compare different LLMs under the same Harness",
+  "开放式 GIS 长程任务": "Open-Ended Long-Horizon GIS Tasks",
+  "给完整 Harness 一个复杂任务说明，让它自行拆解工作、查找资料、编写代码、运行 GIS 分析并交付可核验成果。": "Give a complete Harness a complex task brief and require it to decompose the work, find information, write code, run GIS analyses, and deliver verifiable outputs.",
+  "面向 Codex、Claude Code 等智能体系统": "Designed for agent systems such as Codex and Claude Code",
+  "多源数据搜索、下载、清洗与坐标对齐": "Multi-source data search, download, cleaning, and coordinate alignment",
+  "空间分析、地图、表格和研究报告": "Spatial analysis, maps, tables, and research reports",
+  "过程日志、可复现性、恢复能力与人工介入": "Process logs, reproducibility, recovery, and human intervention",
+  "轻量 Harness 的固定步骤示例": "Example Fixed Workflow for the Lightweight Harness",
+  "读取并结构化灾害通报": "Read and structure a disaster bulletin",
+  "调用基础预测组件": "Call a basic forecasting component",
+  "Web Search 核验最新资料": "Use web search to verify current information",
+  "检索 SOP 与历史案例": "Retrieve SOPs and historical cases",
+  "生成带引用建议并决定是否升级给人": "Generate cited recommendations and decide whether to escalate to a human",
+  "“预测更准”不代表来得及行动": "A More Accurate Forecast May Still Arrive Too Late",
+  "需要同时测量提前量、概率校准、误报、漏报和不同地区或灾种上的稳定性。": "Evaluation must also measure lead time, probability calibration, false alarms, missed events, and robustness across regions and hazards.",
+  "“回答流畅”不代表证据可靠": "A Fluent Answer Does Not Guarantee Reliable Evidence",
+  "需要单独检查检索覆盖、引用正确性、来源时效性、事实忠实度和冲突信息处理。": "Evaluation must separately assess retrieval coverage, citation correctness, source timeliness, factual faithfulness, and the handling of conflicting information.",
+  "“建议合理”不代表符合工作流程": "A Reasonable Recommendation May Still Violate the Workflow",
+  "需要行业人员判断建议是否符合 SOP、是否完整可执行，以及何时必须拒答或升级给人。": "Practitioners must assess whether recommendations follow SOPs, are complete and actionable, and correctly refuse or escalate when required.",
+  "“单项得分高”不代表社区受益": "A High Component Score Does Not Guarantee Community Value",
+  "需要桌面演练和用户研究验证系统是否减少工作量、缩短决策时间并改善决策一致性。": "Tabletop exercises and user studies are needed to determine whether the system reduces workload, shortens decision time, and improves decision consistency.",
+  "理解需求": "Understand Needs",
+  "用户、决策、风险与价值": "Users, decisions, risks, and value",
+  "定义任务": "Define Tasks",
+  "输入、输出、范围与失败": "Inputs, outputs, scope, and failures",
+  "构建真值": "Build Ground Truth",
+  "事件案例、标注与隐藏结果": "Event cases, annotations, and hidden outcomes",
+  "评估比较": "Evaluate and Compare",
+  "指标、基线、盲测与专家评分": "Metrics, baselines, blind tests, and expert scoring",
+  "分析改进": "Analyse and Improve",
+  "失败模式、反馈与论文": "Failure modes, feedback, and publications",
+  "建议的六层评估框架：按评测对象分组": "Proposed Six-Layer Evaluation Framework, Grouped by Evaluation Target",
+  "评估层": "Evaluation Layer",
+  "要回答的问题": "Question to Answer",
+  "示例指标": "Example Metrics",
+  "真值或评审来源": "Ground Truth or Review Source",
+  "评估灾害预测模型、暴露模型和提供给 LLM 调用的基础工具组件": "Evaluate disaster forecasting models, exposure models, and basic tool components available to LLMs",
+  "灾害预测": "Disaster Forecasting",
+  "路径、强度、时间与影响范围是否准确？概率是否可信？": "Are the track, intensity, timing, and affected area accurate? Are the probabilities well calibrated?",
+  "位置或时间误差、MAE/RMSE、IoU、Brier/CRPS、提前量、漏报与误报": "Location or timing error, MAE/RMSE, IoU, Brier/CRPS, lead time, missed events, and false alarms",
+  "历史观测、最佳路径、卫星或官方灾情记录": "Historical observations, best-track data, satellite observations, or official impact records",
+  "暴露与影响": "Exposure and Impact",
+  "受影响人口、设施和资产估算是否正确？优先区域是否排对？": "Are estimates of affected populations, facilities, and assets correct? Are priority areas ranked appropriately?",
+  "计数误差、空间重叠、排序相关、分群误差与不确定性覆盖": "Count error, spatial overlap, rank correlation, subgroup error, and uncertainty coverage",
+  "人口与设施数据、灾后范围、现场核验": "Population and facility data, post-disaster extent, and field verification",
+  "在统一的轻量 Harness、SOP、RAG、Web Search 和工具条件下比较不同大语言模型": "Compare different LLMs under the same lightweight Harness, SOP, RAG, web-search, and tool conditions",
+  "通报与 RAG": "Bulletins and RAG",
+  "系统是否识别了真正重要的变化，并找到正确、最新的证据？": "Does the system identify genuinely important changes and retrieve correct, current evidence?",
+  "字段提取和变化检测 Precision/Recall/F1、延迟、Recall@k、引用准确率、事实忠实度": "Field extraction and change-detection precision/recall/F1, latency, Recall@k, citation accuracy, and factual faithfulness",
+  "人工标注通报差异、经批准的知识库与出处": "Human-annotated bulletin differences, approved knowledge bases, and source documents",
+  "行动建议": "Action Recommendations",
+  "建议是否符合 SOP、完整、可执行并知道何时停止或求助？": "Do recommendations follow SOPs, remain complete and actionable, and know when to stop or ask for help?",
+  "专家量表、关键步骤覆盖、安全违规率、拒答或升级准确率、证据充分性": "Expert rubrics, critical-step coverage, safety-violation rate, refusal or escalation accuracy, and evidence sufficiency",
+  "World Vision/行业专家、SOP、情景化评审": "World Vision or industry experts, SOPs, and scenario-based review",
+  "评估完整智能体系统的长程规划、工具编排、产物交付与实际工作价值": "Evaluate long-horizon planning, tool orchestration, deliverable production, and practical value of complete agent systems",
+  "端到端价值": "End-to-End Value",
+  "整套系统是否让一线人员更快、更清楚地作出高质量决定？": "Does the complete system help frontline staff make high-quality decisions faster and more clearly?",
+  "发现到告警时间、完成任务时间、工作量、决策一致性、信任与采用意愿": "Time from detection to alert, task-completion time, workload, decision consistency, trust, and adoption intent",
+  "桌面演练、用户研究、访谈与结构化反馈": "Tabletop exercises, user studies, interviews, and structured feedback",
+  "GIS 长程任务": "Long-Horizon GIS Tasks",
+  "Harness 能否自主规划并完成多步骤、多工具和多源数据的复杂空间任务？": "Can the Harness independently plan and complete a complex spatial task involving multiple steps, tools, and data sources?",
+  "任务完成率、空间结果正确性、数据与引用有效性、产物可运行性、复现率、人工介入次数、错误恢复率": "Task-completion rate, spatial correctness, data and citation validity, deliverable executability, reproducibility, human interventions, and error-recovery rate",
+  "隐藏任务规范、参考 GIS 流程、自动产物检查与专家复核": "Hidden task specifications, reference GIS workflows, automated deliverable checks, and expert review",
+  "隐藏结果": "Hidden Outcomes",
+  "做决定前不能看到真实灾后结果，避免后见之明偏差。": "The true post-disaster outcome must remain hidden at decision time to prevent hindsight bias.",
+  "覆盖困难案例": "Challenging Cases",
+  "包含误报、漏报、数据缺失、来源冲突、多语言和分布外事件。": "Include false alarms, missed events, missing data, conflicting sources, multilingual content, and out-of-distribution events.",
+  "多层基线": "Layered Baselines",
+  "比较规则与传统模型、开源预测模型、直接 LLM、固定轻量 Harness 和完整长程智能体。": "Compare rules and traditional models, open forecasting models, direct LLMs, fixed lightweight Harnesses, and complete long-horizon agents.",
+  "专家参与": "Expert Involvement",
+  "行业人员共同定义高风险错误、权重和可接受阈值。": "Practitioners jointly define high-risk errors, weights, and acceptable thresholds.",
+  "三条赛道的 Benchmark Specification": "Benchmark Specification for all three tracks",
+  "多灾种 Event Case 与隐藏真值": "Multi-hazard Event Cases and hidden ground truth",
+  "轻量 Harness、GIS 长程任务和统一评估工具": "Lightweight Harness, long-horizon GIS tasks, and unified evaluation tools",
+  "多模型预测的隐藏测试对比": "Hidden-test comparison of multiple forecasting models",
+  "不同 LLM 完成固定 Harness 步骤的对比": "Comparison of different LLMs completing fixed Harness steps",
+  "一个复杂 GIS 长程任务的完整回放": "Full replay of one complex long-horizon GIS task",
+  "任务是否反映真实需求": "Whether tasks reflect real needs",
+  "指标是否可靠且可复现": "Whether metrics are reliable and reproducible",
+  "是否能区分模型优劣并指导改进": "Whether the Benchmark distinguishes performance and guides improvement",
+  "建议的第一学期 MVP": "Suggested First-Semester MVP",
+  "Track 01：从 20–30 个高质量多灾种 Event Case 起步，并保留多个时间快照和隐藏真值": "Track 01: Begin with 20–30 high-quality multi-hazard Event Cases, retaining multiple time snapshots and hidden ground truth",
+  "Track 02：先提供 2–3 个基础预测组件、一个小型 SOP/RAG 语料库和 10–20 个固定流程任务": "Track 02: Provide 2–3 basic forecasting components, a small SOP/RAG corpus, and 10–20 fixed-workflow tasks",
+  "Track 03：设计 5–10 个需要多源数据与 GIS 操作的开放式长程任务，并定义可自动检查的交付物": "Track 03: Design 5–10 open-ended long-horizon tasks requiring multi-source data and GIS operations, with deliverables that can be checked automatically",
+  "三个 Track 分别设置开发集与隐藏测试集，再用统一报告呈现性能、成本、失败模式和人工介入": "Create separate development and hidden test sets for all three tracks, then report performance, cost, failure modes, and human intervention in a unified format",
+  "潜在研究与论文方向": "Potential Research and Publication Directions",
+  "灾害预测或暴露分析 Benchmark 数据集论文": "A Benchmark dataset paper on disaster forecasting or exposure analysis",
+  "RAG 是否提高灾害建议的事实性、可执行性和安全性": "Whether RAG improves the factuality, actionability, and safety of disaster recommendations",
+  "World Model 输出能否改善 Harness 的地点与人群优先级": "Whether World Model outputs improve geographic and population prioritisation in the Harness",
+  "不同 LLM 在相同轻量 Harness 下的工具使用、Web 核验和 SOP 遵循能力": "Tool use, web verification, and SOP compliance of different LLMs under the same lightweight Harness",
+  "Codex、Claude Code 等长程智能体完成复杂 GIS 任务的能力边界": "The capability boundaries of long-horizon agents such as Codex and Claude Code on complex GIS tasks",
+  "自动指标与人道主义专家判断之间的一致性": "Agreement between automated metrics and humanitarian expert judgement",
+  "项目特点：": "Project Profile:",
+  "这不是一个轻量的“跑分项目”。它同时需要多灾种 Event Case、基础预测组件、轻量 Harness 环境和开放式 GIS 长程任务，对案例设计、工具封装、标注质量、实验控制、自动评估和行业沟通都有较高要求。做好后既能独立形成有影响力的 Benchmark 论文，也能为前两个组件提供统一、外部且可复现的评价框架。": "This is not a lightweight score-running project. It requires multi-hazard Event Cases, basic forecasting components, a lightweight Harness environment, and open-ended long-horizon GIS tasks. It places high demands on case design, tool packaging, annotation quality, experimental control, automated evaluation, and practitioner communication. When done well, it can support an influential standalone Benchmark paper and provide a consistent, external, and reproducible evaluation framework for the first two components.",
+  "共同工作方式": "Shared Working Model",
+  "独立收集，可选协作，接口尽量兼容": "Independent Collection, Optional Collaboration, Compatible Interfaces",
+  "五个小组默认独立收集数据和 Event Case，不要求建立全班共享数据集。小组之间可以并行开发，也可以自愿协作，交流公开数据来源、字段格式、标注说明、工具或模型输出；若希望做跨组件集成，再协商兼容接口和测试方式。": "By default, the five groups independently collect data and Event Cases; a class-wide shared dataset is not required. Groups may develop in parallel or collaborate voluntarily by exchanging public data sources, field formats, annotation guidance, tools, or model outputs. Groups that want cross-component integration can then agree on compatible interfaces and testing methods.",
+  "World Model 输出": "World Model Outputs",
+  "灾害预测、风险或影响范围、暴露摘要、模型版本、不确定性与数据来源。": "Disaster forecasts, risk or impact extent, exposure summaries, model versions, uncertainty, and data sources.",
+  "Harness 输出": "Harness Outputs",
+  "通报变化、事件状态、检索证据、行动建议、缺失信息、人工决定与运行日志。": "Bulletin changes, event state, retrieved evidence, action recommendations, missing information, human decisions, and run logs.",
+  "Benchmark 输出": "Benchmark Outputs",
+  "多灾种测试案例与隐藏真值、基础预测工具、轻量 Harness、开放式 GIS 任务、指标、评分和失败分析。": "Multi-hazard test cases and hidden ground truth, basic forecasting tools, a lightweight Harness, open-ended GIS tasks, metrics, scores, and failure analyses.",
+  "阶段 1": "PHASE 1",
+  "各组确定范围": "Define Each Group’s Scope",
+  "每组选择灾害、地区、用户问题，并开始收集自己的案例与数据。": "Each group selects a hazard, region, and user question, then begins collecting its own cases and data.",
+  "阶段 2": "PHASE 2",
+  "建立最小闭环": "Build the Minimum Viable Loop",
+  "各组定义自己的输入输出；有合作意向的小组再约定兼容字段。": "Each group defines its own inputs and outputs; collaborating groups can then agree on compatible fields.",
+  "阶段 3": "PHASE 3",
+  "并行开发与验证": "Develop and Validate in Parallel",
+  "各组独立迭代；可自愿交换公开资源、模型输出或受控测试任务。": "Groups iterate independently and may voluntarily exchange public resources, model outputs, or controlled testing tasks.",
+  "阶段 4": "PHASE 4",
+  "独立演示，可选联动": "Independent Demonstrations, Optional Integration",
+  "每组展示自己的端到端成果；跨组件回放可作为扩展成果。": "Each group demonstrates its own end-to-end result; a cross-component replay can be presented as an extension.",
+  "所有组件共同遵守的边界": "Boundaries Shared by All Components",
+  "只支持专业判断，不替代官方预警机构。": "Support professional judgement without replacing official warning authorities.",
+  "不自动下达疏散命令，不决定援助资格。": "Do not automatically issue evacuation orders or determine eligibility for assistance.",
+  "不自主分配资源或直接向社区发布高风险信息。": "Do not autonomously allocate resources or publish high-risk information directly to communities.",
+  "所有结果保留来源、版本、假设和不确定性。": "Preserve sources, versions, assumptions, and uncertainty for all outputs.",
+  "涉及个人或社区数据时遵守隐私和访问权限。": "Respect privacy and access controls when working with personal or community data.",
+  "关键输出必须可供人工确认、修改、拒绝和审计。": "Critical outputs must support human confirmation, modification, rejection, and auditing.",
+  "公开参考：": "Public References:",
+  "；": ";",
+  "。 项目内容同时参考课程的 World Vision/RELIF 资料、": ". Project content also draws on the course’s World Vision/RELIF materials,",
+  "与 v4 文档。World Model 三张视觉由 OpenAI 图像生成工具创建，仅用于教学概念说明，不代表真实或实时预报。公开页面访问日期：2026-09-06。": "and the v4 document. The three World Model visuals were created with OpenAI image generation for teaching purposes only and do not represent real or live forecasts. Public pages accessed on 6 September 2026.",
+  "AIE3905 S02 · 五个小组 · 三个并行项目 · 中文说明 v5 · 本页面用于课程项目介绍与选题讨论": "AIE3905 S02 · Five Groups · Three Parallel Projects · Version 5 · For Course Project Introduction and Selection"
+}
+</script>
+<script id="i18n-script">
+  (() => {
+    const english = JSON.parse(document.getElementById('translations').textContent);
+    const toggle = document.getElementById('languageToggle');
+    const description = document.querySelector('meta[name="description"]');
+    const originalDescription = 'AIE3905 S02 与 World Vision 灾害智能合作项目中文说明 v5：World Model、Agent Harness 与 Disaster Intelligence Benchmark';
+    const englishDescription = 'AIE3905 S02 and World Vision disaster intelligence project guide: World Model, Agent Harness, and Disaster Intelligence Benchmark';
+    const originalTitle = 'AIE3905 S02 · World Vision 合作项目组件 v5';
+    const englishTitle = 'AIE3905 S02 · World Vision Project Components';
+    const textNodes = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+
+    while ((node = walker.nextNode())) {
+      const parent = node.parentElement;
+      const trimmed = node.nodeValue.trim();
+      if (!trimmed || parent?.closest('script, style, .language-toggle')) continue;
+      textNodes.push({ node, original: node.nodeValue, key: trimmed.replace(/\s+/g, ' ') });
+    }
+
+    const imageAlts = [
+      ['台风集合轨迹预测概念示意', 'Concept illustration of ensemble typhoon track forecasts'],
+      ['洪水危害与淹没范围概念示意', 'Concept illustration of flood hazard and inundation extent'],
+      ['多灾种联动 World Model 概念示意', 'Concept illustration of a multi-hazard World Model']
+    ];
+    const originalAlts = imageAlts.map(([zh]) => document.querySelector(`img[alt="${zh}"]`));
+    let currentLanguage = 'en';
+
+    function replacePreservingWhitespace(value, target) {
+      const leading = value.match(/^\s*/)?.[0] || '';
+      const trailing = value.match(/\s*$/)?.[0] || '';
+      return `${leading}${target}${trailing}`;
+    }
+
+    function setLanguage(language) {
+      const useEnglish = language === 'en';
+      currentLanguage = language;
+      document.documentElement.lang = useEnglish ? 'en' : 'zh-CN';
+      document.title = useEnglish ? englishTitle : originalTitle;
+      description.setAttribute('content', useEnglish ? englishDescription : originalDescription);
+
+      textNodes.forEach(({ node: textNode, original, key }) => {
+        textNode.nodeValue = useEnglish && english[key]
+          ? replacePreservingWhitespace(original, english[key])
+          : original;
+      });
+
+      originalAlts.forEach((image, index) => {
+        if (image) image.alt = useEnglish ? imageAlts[index][1] : imageAlts[index][0];
+      });
+
+      toggle.innerHTML = useEnglish
+        ? '<span class="lang-current">English</span><span aria-hidden="true">/</span><span class="lang-switch">中文</span>'
+        : '<span class="lang-switch">English</span><span aria-hidden="true">/</span><span class="lang-current">中文</span>';
+      toggle.setAttribute('aria-label', useEnglish ? 'Switch to Chinese' : '切换到英文');
+    }
+
+    toggle.addEventListener('click', () => setLanguage(currentLanguage === 'en' ? 'zh' : 'en'));
+    setLanguage('en');
+  })();
+</script>
+</body>
+</html>
